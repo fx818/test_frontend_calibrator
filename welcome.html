@@ -1,33 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Welcome</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f2f5;
+      color: #333;
+    }
+
+    h1 {
+      color: #4CAF50;
+    }
+
+    .card {
+      background: white;
+      padding: 30px 50px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .user-info {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome!</h1>
-  <p id="userInfo">Loading user info...</p>
+  <div class="card">
+    <h1>Welcome!</h1>
+    <div class="user-info" id="userInfo">
+      Loading user info...
+    </div>
+  </div>
 
   <script>
     const API_BASE = "http://127.0.0.1:8000";
 
-    async function loadUser() {
+    async function fetchUserInfo() {
       try {
-        const res = await fetch(API_BASE + "/me");
+        const res = await fetch(`${API_BASE}/me`);
         const data = await res.json();
+
         if (data.error) {
-          document.getElementById("userInfo").innerText = "Error: " + data.error;
+          document.getElementById("userInfo").innerText = "Failed to fetch user info.";
         } else {
-          document.getElementById("userInfo").innerText =
-            `Hello, ${data.name || "User"} (${data.email})!`;
+          document.getElementById("userInfo").innerHTML = `
+            <strong>Name:</strong> ${data.name} <br>
+            <strong>Email:</strong> ${data.email}
+          `;
         }
       } catch (err) {
-        document.getElementById("userInfo").innerText = "Failed to fetch user info.";
         console.error(err);
+        document.getElementById("userInfo").innerText = "Error fetching user info.";
       }
     }
 
-    loadUser();
+    fetchUserInfo();
   </script>
 </body>
 </html>
